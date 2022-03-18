@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+import { join } from 'path';
 dotenv.config();
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
-      autoSchemaFile: './schema.gql',
+      // autoSchemaFile: './schema.gql',
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: true,
       playground: true,
       context: ({ req }) => ({ headers: req.headers }),
