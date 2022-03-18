@@ -12,7 +12,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserResponseModel } from './user-response.model';
 import * as bcrypt from 'bcrypt';
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -43,11 +42,13 @@ export class UsersService {
   }
 
   async findAll(): Promise<Array<User>> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ relations: ['posts'] });
   }
 
   async findOne(userId: string): Promise<UserResponseModel> {
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['posts'],
+    });
     if (!user) {
       throw new NotFoundException(`User #${userId} not found`);
     }
@@ -66,6 +67,14 @@ export class UsersService {
       throw new NotFoundException(`User #${userId} not found`);
     }
     return this.userRepository.save(user);
+  }
+
+  async findUserByEmail(email: string): Promise<UserResponseModel> {
+    const user = await this.userRepository.findOne({ email: email });
+    if (!user) {
+      throw new NotFoundException(`User #${email} not found`);
+    }
+    return user;
   }
 
   // async remove(userId: string): Promise<UserResponseModel> {
@@ -97,6 +106,15 @@ export class UsersService {
       email: '',
       role: '',
       exampleField: 0,
+      posts: [],
     };
   }
+
+  // async userPosts(user: User): Promise<UserResponseModel> {
+  //   const userDetail = await this.findUserByEmail(user.email);
+  //   return userDetail;
+  //   // return await this.userRepository.find({
+  //   //   relations: ['posts'],
+  //   // });
+  // }
 }

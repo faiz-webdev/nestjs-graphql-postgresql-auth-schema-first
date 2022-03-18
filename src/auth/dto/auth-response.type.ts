@@ -17,4 +17,7 @@ export class AuthResponse {
 
   @Field(() => String, { description: 'User last name' })
   lastName: string;
+
+  // @Field(() => User)
+  // user: User;
 }

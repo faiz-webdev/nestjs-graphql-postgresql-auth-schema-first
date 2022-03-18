@@ -10,12 +10,15 @@ import * as jwt from 'jsonwebtoken';
 import { AuthResponse } from './dto/auth-response.type';
 import { AuthInput } from './dto/auth.input';
 import * as bcrypt from 'bcrypt';
+import { JwtPayload } from './jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly authRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async login(email: string): Promise<any> {
@@ -33,12 +36,13 @@ export class AuthService {
   }
 
   async signIn(authInput: AuthInput): Promise<AuthResponse> {
-    const user = await this.authRepository.findOne({ email: authInput.email });
+    const { email, password } = authInput;
+    const user = await this.authRepository.findOne({ email: email });
+
     if (user && (await bcrypt.compare(authInput.password, user.password))) {
-      const token = jwt.sign(
-        { email: user.email, firstName: user.firstName },
-        'secret',
-      );
+      const payload: JwtPayload = { email };
+      const token: string = await this.jwtService.sign(payload);
+
       const response: AuthResponse = {
         token: token,
         message: 'User logged-in successfully',
@@ -50,6 +54,23 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Please check your login credentials');
     }
+
+    // if (user && (await bcrypt.compare(authInput.password, user.password))) {
+    //   const token = jwt.sign(
+    //     { email: user.email, firstName: user.firstName },
+    //     'secret',
+    //   );
+    //   const response: AuthResponse = {
+    //     token: token,
+    //     message: 'User logged-in successfully',
+    //     email: user.email,
+    //     firstName: user.firstName,
+    //     lastName: user.lastName,
+    //   };
+    //   return response;
+    // } else {
+    //   throw new UnauthorizedException('Please check your login credentials');
+    // }
 
     //   if (!user) {
     //     throw new NotFoundException(`User not found`);

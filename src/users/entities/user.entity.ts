@@ -1,10 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Post } from '../../posts/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -36,4 +37,19 @@ export class User {
   @Column()
   @Field(() => String, { description: 'password of the user' })
   password: string;
+
+  @Field()
+  @Column()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // @OneToMany((_type) => Post, (post) => post.user, { eager: true })
+  @OneToMany((_type) => Post, (post) => post.user)
+  @Field(() => [Post], { nullable: true })
+  posts: Post[];
 }

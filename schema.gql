@@ -2,6 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Post {
+  """id of the user"""
+  postId: String!
+
+  """first name of the user"""
+  title: String!
+
+  """last name of the user"""
+  body: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  userId: String!
+  user: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   """id of the user"""
   userId: String!
@@ -23,6 +43,9 @@ type User {
 
   """password of the user"""
   password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  posts: [Post!]
 }
 
 type UserResponseModel {
@@ -43,25 +66,8 @@ type UserResponseModel {
 
   """role of the user"""
   role: String!
+  posts: [Post!]
 }
-
-type Post {
-  """id of the user"""
-  postId: String!
-
-  """first name of the user"""
-  title: String!
-
-  """last name of the user"""
-  body: String!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type AuthResponse {
   """first name of the user"""

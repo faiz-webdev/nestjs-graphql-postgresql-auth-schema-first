@@ -1,4 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Post } from 'src/posts/entities/post.entity';
+import { OneToMany } from 'typeorm';
 
 @ObjectType()
 export class UserResponseModel {
@@ -19,4 +21,8 @@ export class UserResponseModel {
 
   @Field(() => String, { description: 'role of the user' })
   role: string;
+
+  @OneToMany((_type) => Post, (post) => post.user)
+  @Field(() => [Post], { nullable: true })
+  posts: Post[];
 }
