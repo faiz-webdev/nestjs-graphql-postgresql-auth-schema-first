@@ -16,6 +16,8 @@ import { Inject, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { PostsService } from '../posts/posts.service';
 import { Post } from '../posts/entities/post.entity';
+import { Roles } from './roles.decorator';
+import { Role } from './entities/role.enum';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -30,6 +32,7 @@ export class UsersResolver {
   }
 
   @Query(() => [UserResponseModel], { name: 'users' })
+  @Roles(Role.ADMIN)
   findAll() {
     return this.usersService.findAll();
   }

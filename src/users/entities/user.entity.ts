@@ -1,6 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Post } from '../../posts/entities/post.entity';
+import * as bcrypt from 'bcrypt';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -37,6 +39,11 @@ export class User {
   @Column()
   @Field(() => String, { description: 'password of the user' })
   password: string;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 
   @Field()
   @Column()

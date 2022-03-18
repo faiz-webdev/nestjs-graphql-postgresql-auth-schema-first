@@ -36,7 +36,8 @@ export class UsersService {
       email: createUserInput.email,
       role: createUserInput.role,
       exampleField: createUserInput.exampleField,
-      password: hashedPassword,
+      // password: hashedPassword,
+      password,
     });
     return await this.userRepository.save(user);
   }
@@ -108,6 +109,11 @@ export class UsersService {
       exampleField: 0,
       posts: [],
     };
+  }
+
+  private _sanitizeUser(user: User) {
+    delete user.password;
+    return user;
   }
 
   // async userPosts(user: User): Promise<UserResponseModel> {
